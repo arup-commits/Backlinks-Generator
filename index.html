@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backlink Generator</title>
+</head>
+<body>
+    <h1>Welcome to the Backlink Generator Tool</h1>
+    <h2>Generate Backlinks:</h2>
+    <form id="backlinkForm">
+        <label for="domain">Domain Address:</label>
+        <input type="text" id="domain" name="domain" required>
+        <label for="count">Number of Backlinks (max 5000):</label>
+        <input type="number" id="count" name="count" min="1" max="5000" value="1" required>
+        <button type="submit">Generate</button>
+    </form>
+
+    <div id="backlinks"></div>
+
+    <script>
+        document.getElementById('backlinkForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const domain = document.getElementById('domain').value.trim();
+            const count = parseInt(document.getElementById('count').value);
+
+            if (!domain || isNaN(count) || count <= 0) {
+                alert('Please enter valid domain address and count');
+                return;
+            }
+
+            const response = await fetch(`/generate-multiple-backlinks/${domain}/${count}`);
+            const data = await response.json();
+
+            const backlinksContainer = document.getElementById('backlinks');
+            backlinksContainer.innerHTML = '';
+            data.backlinks.forEach(backlink => {
+                const link = document.createElement('a');
+                link.href = backlink;
+                link.textContent = backlink;
+                link.target = '_blank';
+                const br = document.createElement('br');
+                backlinksContainer.appendChild(link);
+                backlinksContainer.appendChild(br);
+            });
+        });
+    </script>
+</body>
+</html>
